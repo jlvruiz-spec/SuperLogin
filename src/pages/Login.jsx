@@ -49,7 +49,7 @@ const Login = () => {
                 <Input id="password" label="Contraseña" type="password" />
                 <button type="submit">Acceder</button>
             </form>
-            <Link to="/passforgot">Recuperar contraseña</Link> | <Link to="/passreset">Cambiar contraseña</Link>
+            {/* <Link to="/passforgot">Recuperar contraseña</Link> | <Link to="/passreset">Cambiar contraseña</Link> */}
 
         </div>
     );

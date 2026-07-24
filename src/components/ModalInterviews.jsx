@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import Input from "./Input";
+import FormAddEditInterview from "./FormAddEditInterview";
 
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
@@ -17,21 +17,11 @@ const ModalInterviews = ({ id, viewInterview, onClose }) => {
     const {
         loading,
         error,
-        usePost,
         useGetRoute,
     } = useConnections(service);
 
     const getRecordById = async (id) => {
         setData(await useGetRoute(id));
-    }
-
-    const saveEditInterview = () => {
-
-    }
-
-    const clearAll = (e) => {
-        setFormDescripcion("");  
-        setFormUserId(0);
     }
 
     useEffect(() => {
@@ -50,7 +40,6 @@ const ModalInterviews = ({ id, viewInterview, onClose }) => {
 
     },[data]);
 
-
     return (
         <>
         
@@ -62,11 +51,7 @@ const ModalInterviews = ({ id, viewInterview, onClose }) => {
 
                 <h3>Entrevistas</h3> 
 
-                {addNew && (
-                    <button className="counter">Agregar entrevista</button>
-                )}
-
-                <div style={{ height: '100px'}}>
+                <div style={{ height: '140px'}}>
                     <div style={{ width: '30%', float: 'left'}}>
                         
                         <table style={{ border: '1px solid black', borderCollapse: 'collapse', fontSize: '14px'}}>
@@ -97,16 +82,10 @@ const ModalInterviews = ({ id, viewInterview, onClose }) => {
                     </div>
 
                     <div style={{ width: '30%', float: 'left'}}>
-
-                        {addNew && (
-                            <form onSubmit={saveEditInterview} onReset={clearAll} style={{ border: '0px solid black', padding: '10px', marginBottom: '20px'}}>
-                                <input name="Id" value={id} type="hidden" />
-                                <input name="userId" defaultValue={formUserId} type="hidden" />
-                                <Input name="descripcion" defaultValue={formDescripcion} label="Descripción:" />
-                                <p><button className="counter" type="submit">Guardar</button> <button className="counter" type="reset">Descartar</button></p>
-                            </form>
-                        )}
-
+                            <>
+                            <h4>Agregar entrevista</h4>
+                                <FormAddEditInterview id={id} onSaved={() => getRecordById(id)}></FormAddEditInterview>
+                            </>
                     </div>
                 </div>
 

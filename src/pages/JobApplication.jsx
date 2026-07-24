@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 
-import FormAddEditJobApp from "../components/FormAddEditJobApp";
+const FormAddEditJobApp  = lazy(() => import("../components/FormAddEditJobApp"));
 import ModalNotes from "../components/ModalNotes";
 import ModalInterviews from "../components/ModalInterviews";
 
@@ -75,35 +75,31 @@ const JobApplication = () => {
 
   return (
     <div>
-        <h1>Aplicación a Empleo</h1>
+        <h1>Seguimiento Empleos</h1>
 
         {error && <div style={{ color: 'red', backgroundColor: '#f3cec8', padding: '5px'}}>{error}</div>}
 
-        <center><button className="counter" onClick={() => {setViewAddEdit(true), setIdJobApplication(0)}}>Agregar nueva aplicación a empleo</button></center>
+        <center><button className="counter" onClick={() => newJobApplication(0)}>Agregar nueva aplicación a empleo</button></center>
         
-        {!viewAddEdit && idJobApplication > 0 && (
-          <FormAddEditJobApp id={idJobApplication} viewAddEdit={viewAddEdit} onClose={FormAddEditJobAppClose}></FormAddEditJobApp>
+        {viewAddEdit && idJobApplication >= 0 && (
+          <FormAddEditJobApp id={idJobApplication} viewAddEdit={viewAddEdit} onClose={FormAddEditJobAppClose} onSaved={getAllJobApplications}></FormAddEditJobApp>
         )}
+        
           <ModalNotes id={idJobApplication} viewNotes={notesView} onClose={NotesClose}></ModalNotes>
+        
         {!viewAddEdit && idJobApplication > 0 && (
           <ModalInterviews id={idJobApplication} viewInterview={viewInterview} onClose={InterviewsClose}></ModalInterviews>
         )}
+
         <p>&nbsp;</p>
         {loading && <div style={{ color: 'orange', backgroundColor: '#eee2d1', padding: '5px'}}>Cargando registros, espere</div> }
 
         <table style={{ border: '1px solid black', borderCollapse: 'collapse', fontSize: '14px'}}>
           <thead>
             <tr className='tabla'>
-              <th>Aplicación Id</th>
               <th>Fecha Creación</th>
               <th>Nombre</th>
-              <th>URL</th>
-              <th>Empresa</th>
-              <th>Reclutador</th>
-              <th>Remoto/Presencial</th>
-              <th>Descripción</th>
               <th>Estado</th>
-              <th>Fuente</th>
               <th></th>
               <th></th>
               <th></th>
@@ -115,16 +111,9 @@ const JobApplication = () => {
               data.map((item) => {
                 return (
                 <tr key={item.jobApplicationId}>
-                  <td className='tds'>{item.jobApplicationId}</td>
                   <td className='tds'>{Dates(item.jobApplicationCreationDate)}</td>
                   <td className='tds' style={{ textAlign: 'left'}}>{item.vacancyName}</td>
-                  <td className='tds' style={{ textAlign: 'left'}}>{item.vacancyURL == "" ? "No disponible" : item.vacancyURL}</td>
-                  <td className='tds' style={{ textAlign: 'left'}}>{item.company}</td>
-                  <td className='tds' style={{ textAlign: 'left'}}>{item.recruiterName}</td>
-                  <td className='tds' style={{ textAlign: 'left'}}>{item.location}</td>
-                  <td className='tds' style={{ textAlign: 'left'}}>{item.jobDescription}</td>
                   <td className='tds' style={{ textAlign: 'left'}}>{item.jobApplicationStatusDescription}</td>
-                  <td className='tds' style={{ textAlign: 'left'}}>{item.source}</td>
                   <td className='tds'><button onClick={() => Notes(item.jobApplicationId)} type="button" className="counter">Notas</button></td>
                   <td className='tds'><button onClick={() => Interviews(item.jobApplicationId)} type="button" className="counter">Entrevistas</button></td>
                   <td className='tds'><button onClick={() => getJobApplicationById(item.jobApplicationId)} type="button" className="counter">Editar</button></td>

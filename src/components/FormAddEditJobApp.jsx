@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 
 import JobAppStatus from "./JobAppStatus";
 import Input from "./Input";
+import TextArea from "./TextArea";
 
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
 
-const FormAddEditJobApp = ({ id, viewAddEdit, onClose }) => {
+const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
 
     const [formNombre, setFormNombre] = useState("");
     const [formUrl, setFormUrl] = useState("");
@@ -64,19 +65,19 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose }) => {
         let params = {};
         if (parseInt(formData.get("Id")) != 0){
             await EditJobApp({
-                "company": formData.get("empresa"),
-                "jobApplicationCreationDate": new Date().toISOString(),
-                "jobApplicationId": parseInt(formData.get("Id")),
-                "jobApplicationStatusId": parseInt(formData.get("jobApplicationStatusId")),
-                "jobDescription": formData.get("descripcion"),
-                "location": formData.get("locacion"),
-                "recruiterName": formData.get("reclutador"),
-                "vacancyName": formData.get("nombre"),
-                "vacancyURL": formData.get("url"),
-                "source": formData.get("fuente"),
+                company: formData.get("empresa"),
+                jobApplicationCreationDate: new Date().toISOString(),
+                jobApplicationId: parseInt(formData.get("Id")),
+                jobApplicationStatusId: parseInt(formData.get("jobApplicationStatusId")),
+                jobDescription: formData.get("descripcion"),
+                location: formData.get("locacion"),
+                recruiterName: formData.get("reclutador"),
+                source: formData.get("fuente"),
+                vacancyName: formData.get("nombre"),
+                vacancyURL: formData.get("url")
             });
         } else {   
-            await AddJobApp({
+            let result = await AddJobApp({
                 company: formData.get("empresa"),
                 creationDate: new Date().toISOString(),
                 isActive: true,
@@ -89,8 +90,10 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose }) => {
                 recruiterName: formData.get("reclutador"),
                 userId: 1,
                 vacancyName: formData.get("nombre"),
-                vacancyURL: formData.get("url")});
-        }
+                vacancyURL: formData.get("url")}
+            );    
+        };
+        if (onSaved) onSaved();
     }  
     
     const clearAll = (e) => {
@@ -114,9 +117,10 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose }) => {
 
     return (
         <>
-            {loading && <div style={{ color: 'orange', backgroundColor: '#eee2d1', padding: '5px'}}>Cargando formulario agregado/edición, espere</div> }
+            {/* {loading && <div style={{ color: 'orange', backgroundColor: '#eee2d1', padding: '5px'}}>Cargando formulario agregado/edición, espere</div> } */}
             
             {error && <div style={{ color: 'red', backgroundColor: '#f3cec8', padding: '5px'}}>{error}</div>}
+
 
             {viewAddEdit && (
                 <div style={{ border: '1px solid black', padding: '10px', marginBottom: '20px'}}>
@@ -130,7 +134,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose }) => {
                         <Input name="empresa" defaultValue={formEmpresa} label="Empresa:" />
                         <Input name="reclutador" defaultValue={formReclutador} label="Reclutador:" />
                         <Input name="locacion" defaultValue={formLocacion} label="Locación:" />
-                        <Input name="descripcion" defaultValue={formDescripcion} label="Descripción:" />
+                        <TextArea name="descripcion" defaultValue={formDescripcion} label="Descripción:"></TextArea>
                         <Input name="fuente" defaultValue={formSource} label="Fuente:" />
                         Estado:<JobAppStatus status={formStatus} onChange={handleStatusChange}></JobAppStatus>
                         <p><button className="counter" type="submit">Guardar</button> <button className="counter" type="reset">Descartar</button></p>

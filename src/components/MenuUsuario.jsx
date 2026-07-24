@@ -4,9 +4,9 @@ const MenuUsuario = () => {
 
     return (
         <div>
-            <Link to="/jobapplication">Aplicación a Empleos</Link> | 
-            &nbsp;<Link to="/jobappstatus">Estados</Link> | 
-            &nbsp;<Link to="/notetypes">Tipos de Notas</Link> |
+            {/* <Link to="/jobapplication">Seguimiento Empleos</Link> |  */}
+            {/* &nbsp;<Link to="/jobappstatus">Estados</Link> | 
+            &nbsp;<Link to="/notetypes">Tipos de Notas</Link> | */}
             &nbsp;<Link to="/" 
                 onClick={() => {
                     for (const key in localStorage) {

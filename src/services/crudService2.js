@@ -36,7 +36,7 @@ const request = async (endpoint, options = {}) => {
 
         // Si el token expiró (401), intentar renovarlo y reintentar la solicitud
         if (response.status === 401) {
-            console.warn('Token expirado. Intentando renovarlo...');
+            //console.warn('Token expirado. Intentando renovarlo...');
 
             //const tokens = new Tokens();
             //await tokens.tokenCRM();

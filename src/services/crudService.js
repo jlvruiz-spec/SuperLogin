@@ -35,8 +35,13 @@ const request = async (endpoint, options = {}) => {
         });
 
         // Si el token expiró (401), intentar renovarlo y reintentar la solicitud
+        if (response.status === 400){
+            throw Error('Datos incorrectos o inexistentes en el cliente, no se procesarán los datos');
+        }
+
         if (response.status === 401) {
-            console.warn('Token expirado. Intentando renovarlo...');
+            //console.warn('Clave o contraseña erronea, intente de nuevo');
+            throw Error('Clave o contraseña erronea, intente de nuevo');
 
             //const tokens = new Tokens();
             //await tokens.tokenCRM();
