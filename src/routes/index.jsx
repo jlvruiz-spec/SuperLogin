@@ -9,6 +9,8 @@ import PassReset from "../pages/PassReset";
 import JobApplication from "../pages/JobApplication";
 import NoteTypes from "../pages/NoteTypes";
 import JobAppStatus from "../pages/JobAppStatus";
+import Interviews from "../pages/Interviews";
+import Notes from "../pages/Notes";
 
 const router = createBrowserRouter([ 
   {  
@@ -34,6 +36,8 @@ const router = createBrowserRouter([
           { path: "/applications", element: <Applications /> },
           { path: "/notetypes", element: <NoteTypes /> },
           { path: "/jobappstatus", element: <JobAppStatus /> },
+          { path: "/interviews/:id", element: <Interviews /> },
+          { path: "/notes/:id", element: <Notes /> },
         ]
       }
     ]

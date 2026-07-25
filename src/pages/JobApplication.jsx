@@ -1,4 +1,6 @@
 import { useState, useEffect, Suspense, lazy } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const FormAddEditJobApp  = lazy(() => import("../components/FormAddEditJobApp"));
 import ModalNotes from "../components/ModalNotes";
@@ -16,6 +18,8 @@ const JobApplication = () => {
     const [viewAddEdit, setViewAddEdit] = useState(false);
     const [notesView, setNotesView] = useState(false);
     const [viewInterview, setviewInterview] = useState(false);
+
+    const navigate = useNavigate();
 
     const service = crudService2("api/v1/JobApplication/GetJobApplicationByUserId");
     const {
@@ -63,6 +67,7 @@ const JobApplication = () => {
       setViewAddEdit(false);
       setviewInterview(true);
       setNotesView(false);
+      navigate("/interviews/id");
     }
 
     const InterviewsClose = () => {
@@ -82,7 +87,7 @@ const JobApplication = () => {
         <center><button className="counter" onClick={() => newJobApplication(0)}>Agregar nueva aplicación a empleo</button></center>
         
         {viewAddEdit && idJobApplication >= 0 && (
-          <FormAddEditJobApp id={idJobApplication} viewAddEdit={viewAddEdit} onClose={FormAddEditJobAppClose} onSaved={getAllJobApplications}></FormAddEditJobApp>
+          <FormAddEditJobApp id={idJobApplication} viewAddEdit={viewAddEdit} onClose={FormAddEditJobAppClose} ></FormAddEditJobApp>
         )}
         
           <ModalNotes id={idJobApplication} viewNotes={notesView} onClose={NotesClose}></ModalNotes>
@@ -97,6 +102,7 @@ const JobApplication = () => {
         <table style={{ border: '1px solid black', borderCollapse: 'collapse', fontSize: '14px'}}>
           <thead>
             <tr className='tabla'>
+              {/* <th>Id</th> */}
               <th>Fecha Creación</th>
               <th>Nombre</th>
               <th>Estado</th>
@@ -111,12 +117,13 @@ const JobApplication = () => {
               data.map((item) => {
                 return (
                 <tr key={item.jobApplicationId}>
+                  {/* <td className='tds'>{item.jobApplicationId}</td> */}
                   <td className='tds'>{Dates(item.jobApplicationCreationDate)}</td>
                   <td className='tds' style={{ textAlign: 'left'}}>{item.vacancyName}</td>
                   <td className='tds' style={{ textAlign: 'left'}}>{item.jobApplicationStatusDescription}</td>
-                  <td className='tds'><button onClick={() => Notes(item.jobApplicationId)} type="button" className="counter">Notas</button></td>
-                  <td className='tds'><button onClick={() => Interviews(item.jobApplicationId)} type="button" className="counter">Entrevistas</button></td>
-                  <td className='tds'><button onClick={() => getJobApplicationById(item.jobApplicationId)} type="button" className="counter">Editar</button></td>
+                  <td className='tds'><Link to={`/interviews/${item.jobApplicationId}`}>Entrevistas</Link></td>
+                  <td className='tds'><Link to={`/notes/${item.jobApplicationId}`}>Notas</Link></td>
+                  <td className='tds'><button onClick={() => getJobApplicationById(item.jobApplicationId)} type="button" className="counter">Editar{item.jobApplicationI}</button></td>
                 </tr>
                 )
               })

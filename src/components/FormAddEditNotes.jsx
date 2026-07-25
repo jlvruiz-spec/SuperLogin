@@ -7,8 +7,10 @@ import SelectNoteType from "./SelectNoteType";
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
 
-const FormAddEditNotes = ({ id, onSaved }) => {
+const FormAddEditNotes = ({ id, viewNote, onClose, onSaved }) => {
 
+    const [viewFormAddEditNotes, setViewFormAddEditNotes] = useState(false);
+    const [formDate, setFormDate] = useState("");
     const [formDescripcion, setFormDescripcion] = useState("");
     const [formNoteType, setFormNoteType] = useState(0);
     
@@ -29,7 +31,7 @@ const FormAddEditNotes = ({ id, onSaved }) => {
         let result = await usePost({
             jobApplicationId: id,
             noteTypeId: formData.get("noteType"),
-            noteDate: new Date().toISOString(),
+            noteDate: new Date(formData.get("fecha")).toISOString(),
             noteDescription: formData.get("descripcion")
         });
         if (onSaved) onSaved();
@@ -37,11 +39,13 @@ const FormAddEditNotes = ({ id, onSaved }) => {
 
     const clearAll = (e) => {
         setFormDescripcion(""); 
+        setFormFecha(""); 
         setFormNoteType(0); 
     }
 
     const handleStatusChange = ({ name }) => {
         setFormDescripcion(name);
+        setFormFecha(""); 
         setFormNoteType(0);
     };
         
@@ -49,11 +53,18 @@ const FormAddEditNotes = ({ id, onSaved }) => {
         <>
             {error && <div style={{ color: 'red', backgroundColor: '#f3cec8', padding: '5px'}}>{error}</div>}
 
-            <form onSubmit={saveEditRecord} onReset={clearAll} style={{ border: '0px solid black', padding: '10px', marginBottom: '20px'}}>
-                <TextArea name="descripcion" defaultValue={formDescripcion} label="Descripción:" ></TextArea>
-                <SelectNoteType status={formNoteType} onChange={handleStatusChange}></SelectNoteType>
-                <p><button className="counter" type="submit">Guardar</button> <button className="counter" type="reset">Descartar</button></p>
-            </form>        
+            {viewNote && (
+                <div style={{ width: '100%', border: '1px solid black', marginBottom: '10px'}}>
+
+                    <form onSubmit={saveEditRecord} onReset={clearAll} style={{ border: '0px solid black', padding: '10px', marginBottom: '20px'}}>
+                        <Input name="fecha" defaultValue={formDate} label="Fecha (yyyy-mm-dd hh:mm):"></Input>
+                        <TextArea name="descripcion" defaultValue={formDescripcion} label="Descripción:" ></TextArea>
+                        <SelectNoteType status={formNoteType} onChange={handleStatusChange}></SelectNoteType>
+                        <p><button className="counter" type="submit">Guardar</button> <button className="counter" type="reset">Limpiar Formulario</button></p>
+                    </form>
+
+                </div>
+            )}        
         </>
     )
 }

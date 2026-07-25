@@ -51,7 +51,7 @@ const ModalInterviews = ({ id, viewInterview, onClose }) => {
 
                 <h3>Entrevistas</h3> 
 
-                <div style={{ height: '140px'}}>
+                <div style={{ height: '170px'}}>
                     <div style={{ width: '30%', float: 'left'}}>
                         
                         <table style={{ border: '1px solid black', borderCollapse: 'collapse', fontSize: '14px'}}>
@@ -81,7 +81,7 @@ const ModalInterviews = ({ id, viewInterview, onClose }) => {
                         
                     </div>
 
-                    <div style={{ width: '30%', float: 'left'}}>
+                    <div style={{ width: '50%', float: 'left'}}>
                             <>
                             <h4>Agregar entrevista</h4>
                                 <FormAddEditInterview id={id} onSaved={() => getRecordById(id)}></FormAddEditInterview>
