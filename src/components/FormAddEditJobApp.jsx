@@ -18,6 +18,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
     const [formStatus, setFormStatus] = useState(0);
     const [formStatusDescripcion, setFormStatusDescripcion] = useState("");
     const [formSource, setFormSource] = useState("");
+    const [formDate, setFormDate] = useState("");
     const [formUserId, setFormUserId] = useState(0);
 
     const service = crudService2("api/v1/JobApplication/");
@@ -40,6 +41,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
         setFormStatus(result.jobApplicationStatusId);
         setFormStatusDescripcion(result.jobApplicationStatusDescription);
         setFormSource(result.source);
+        setFormDate(result.jobApplicationCreationDate);
         setFormUserId(result.userId);
     }
 
@@ -66,7 +68,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
         if (parseInt(formData.get("Id")) != 0){
             await EditJobApp({
                 company: formData.get("empresa"),
-                jobApplicationCreationDate: new Date().toISOString(),
+                jobApplicationCreationDate: new Date(formData.get("fecha")).toISOString(),
                 jobApplicationId: parseInt(formData.get("Id")),
                 jobApplicationStatusId: parseInt(formData.get("jobApplicationStatusId")),
                 jobDescription: formData.get("descripcion"),
@@ -81,7 +83,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
                 company: formData.get("empresa"),
                 creationDate: new Date().toISOString(),
                 isActive: true,
-                jobApplicationCreationDate: new Date().toISOString(),
+                jobApplicationCreationDate: new Date(formData.get("fecha")).toISOString(),
                 jobApplicationStatusDescription: formStatusDescripcion,
                 jobApplicationStatusId: formData.get("jobApplicationStatusId"),
                 jobDescription: formData.get("descripcion"),
@@ -106,6 +108,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
         setFormStatus(0);  
         setFormStatusDescripcion("");  
         setFormSource("");
+        setFormFecha("");
         setFormUserId(0);
     }
 
@@ -136,6 +139,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
                         <Input name="locacion" defaultValue={formLocacion} label="Locación:" />
                         <TextArea name="descripcion" defaultValue={formDescripcion} label="Descripción:"></TextArea>
                         <Input name="fuente" defaultValue={formSource} label="Fuente:" />
+                        <Input name="fecha" defaultValue={formDate} label="Fecha:" type="Date"></Input>
                         Estado:<JobAppStatus status={formStatus} onChange={handleStatusChange}></JobAppStatus>
                         <p><button className="counter" type="submit">Guardar</button> <button className="counter" type="reset">Descartar</button></p>
                     </form>

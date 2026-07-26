@@ -52,7 +52,7 @@ const FormAddEditInterview = ({ id, viewInterview, onClose, onSaved }) => {
                     <div onClick={() => {onClose()}} style={{ float: 'right'}} >X</div>
                     
                     <form onSubmit={saveEditRecord} onReset={clearAll} style={{ border: '0px solid black', padding: '10px', marginBottom: '20px'}}>
-                        <Input name="fecha" defaultValue={formDate} label="Fecha (yyyy-mm-dd hh:mm):"></Input>
+                        <Input name="fecha" defaultValue={formDate} label="Fecha:" type="Date"></Input>
                         <TextArea name="descripcion" defaultValue={formDescripcion} label="Descripción:" ></TextArea>
                         <p><button className="counter" type="submit">Guardar</button> <button className="counter" type="reset">Limpiar formulario</button></p>
                     </form>

@@ -87,7 +87,7 @@ const JobApplication = () => {
         <center><button className="counter" onClick={() => newJobApplication(0)}>Agregar nueva aplicación a empleo</button></center>
         
         {viewAddEdit && idJobApplication >= 0 && (
-          <FormAddEditJobApp id={idJobApplication} viewAddEdit={viewAddEdit} onClose={FormAddEditJobAppClose} ></FormAddEditJobApp>
+          <FormAddEditJobApp id={idJobApplication} viewAddEdit={viewAddEdit} onClose={FormAddEditJobAppClose} onSaved={()=> {getAllJobApplications(), setViewAddEdit(false);}} ></FormAddEditJobApp>
         )}
         
           <ModalNotes id={idJobApplication} viewNotes={notesView} onClose={NotesClose}></ModalNotes>
