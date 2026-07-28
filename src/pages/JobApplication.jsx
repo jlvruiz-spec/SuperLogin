@@ -3,21 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const FormAddEditJobApp  = lazy(() => import("../components/FormAddEditJobApp"));
-import ModalNotes from "../components/ModalNotes";
-import ModalInterviews from "../components/ModalInterviews";
 
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
 
 import Dates from "../utils/dates";
 
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+
+
 const JobApplication = () => {
 
+    const [showIdInTable] = useState(false);
     const [data, setData] = useState([]);
     const [idJobApplication, setIdJobApplication] = useState(0);
     const [viewAddEdit, setViewAddEdit] = useState(false);
-    const [notesView, setNotesView] = useState(false);
-    const [viewInterview, setviewInterview] = useState(false);
+    const [show, setShow] = useState(false);
 
     const navigate = useNavigate();
 
@@ -36,73 +39,53 @@ const JobApplication = () => {
     const getJobApplicationById = async (id) => {
         setIdJobApplication(id);
         setViewAddEdit(true);
-        setviewInterview(false);
-        setNotesView(false);
     }
 
     const newJobApplication = () => {
         setIdJobApplication(0);
         setViewAddEdit(true);
-        setviewInterview(false);
-        setNotesView(false);
     }
 
     const FormAddEditJobAppClose = () => {
       setViewAddEdit(false);
-    }    
-
-    const Notes = async (id) => {
-        setIdJobApplication(id);
-        setViewAddEdit(false);
-        setviewInterview(false);
-        setNotesView(true);
     }
 
-    const NotesClose = () => {
-      setNotesView(false);
-    }
-
-    const Interviews = async (id) => {
-      setIdJobApplication(id);
-      setViewAddEdit(false);
-      setviewInterview(true);
-      setNotesView(false);
-      navigate("/interviews/id");
-    }
-
-    const InterviewsClose = () => {
-      setviewInterview(false);
-    }
+    const handleClose = () => setViewAddEdit(false);
 
     useEffect(() => {
         getAllJobApplications();
     }, []);   
 
   return (
-    <div>
+    <>
         <h1>Seguimiento Empleos</h1>
 
-        {error && <div style={{ color: 'red', backgroundColor: '#f3cec8', padding: '5px'}}>{error}</div>}
+        {error && (
+            <Alert variant="danger">{error}</Alert>
+        )}
 
-        <center><button className="counter" onClick={() => newJobApplication(0)}>Agregar nueva aplicación a empleo</button></center>
+        <center><Button onClick={() => newJobApplication(0)}>Agregar nuevo seguimiento a empleo</Button></center>
+        <p>&nbsp;</p>
         
         {viewAddEdit && idJobApplication >= 0 && (
-          <FormAddEditJobApp id={idJobApplication} viewAddEdit={viewAddEdit} onClose={FormAddEditJobAppClose} onSaved={()=> {getAllJobApplications(), setViewAddEdit(false);}} ></FormAddEditJobApp>
+           <FormAddEditJobApp 
+             id={idJobApplication} 
+             viewAddEdit={viewAddEdit} 
+             onClose={FormAddEditJobAppClose} 
+             onSaved={()=> {getAllJobApplications(), setViewAddEdit(false);}}
+           ></FormAddEditJobApp>
         )}
         
-          <ModalNotes id={idJobApplication} viewNotes={notesView} onClose={NotesClose}></ModalNotes>
-        
-        {!viewAddEdit && idJobApplication > 0 && (
-          <ModalInterviews id={idJobApplication} viewInterview={viewInterview} onClose={InterviewsClose}></ModalInterviews>
-        )}
+        {loading && 
+          <Alert variant="warning">Cargando registros, espere</Alert> 
+        }        
 
-        <p>&nbsp;</p>
-        {loading && <div style={{ color: 'orange', backgroundColor: '#eee2d1', padding: '5px'}}>Cargando registros, espere</div> }
-
-        <table style={{ border: '1px solid black', borderCollapse: 'collapse', fontSize: '14px'}}>
+        <Table striped bordered hover size="sm" >
           <thead>
-            <tr className='tabla'>
-              {/* <th>Id</th> */}
+            <tr>
+              {showIdInTable && (
+                <th>Id</th>
+              )}
               <th>Fecha Creación</th>
               <th>Nombre</th>
               <th>Estado</th>
@@ -116,23 +99,25 @@ const JobApplication = () => {
             { 
               data.map((item) => {
                 return (
-                <tr key={item.jobApplicationId}>
-                  {/* <td className='tds'>{item.jobApplicationId}</td> */}
-                  <td className='tds'>{Dates(item.jobApplicationCreationDate)}</td>
-                  <td className='tds' style={{ textAlign: 'left'}}>{item.vacancyName}</td>
-                  <td className='tds' style={{ textAlign: 'left'}}>{item.jobApplicationStatusDescription}</td>
-                  <td className='tds'><Link to={`/interviews/${item.jobApplicationId}`}>Entrevistas</Link></td>
-                  <td className='tds'><Link to={`/notes/${item.jobApplicationId}`}>Notas</Link></td>
-                  <td className='tds'><button onClick={() => getJobApplicationById(item.jobApplicationId)} type="button" className="counter">Editar{item.jobApplicationI}</button></td>
-                </tr>
+                  <tr key={item.jobApplicationId}>
+                    {showIdInTable && (
+                      <td>{item.jobApplicationId}</td>
+                    )}
+                    <td>{Dates(item.jobApplicationCreationDate)}</td>
+                    <td style={{ textAlign: 'left'}}>{item.vacancyName}</td>
+                    <td style={{ textAlign: 'left'}}>{item.jobApplicationStatusDescription}</td>
+                    <td style={{ textAlign: 'center'}}><Link to={`/interviews/${item.jobApplicationId}`}>Entrevistas</Link></td>
+                    <td style={{ textAlign: 'center'}}><Link to={`/notes/${item.jobApplicationId}`}>Notas</Link></td>
+                    <td style={{ textAlign: 'center'}}><Button variant="link" onClick={() => getJobApplicationById(item.jobApplicationId)}>Editar{item.jobApplicationI}</Button></td>
+                  </tr>
                 )
               })
             }
 
           </tbody>
-        </table>    
+        </Table>    
         
-    </div>
+    </>
   );
 }
 export default JobApplication;

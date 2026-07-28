@@ -16,31 +16,27 @@ const getHeaders = async () => {
     return {
         "Content-Type": "application/json",
         //...(token && { Authorization: `Bearer ${token}` })
+        //...(token && { Authorization: 'Bearer ' + localStorage.getItem("token") })
     };
 };
 
 const request = async (endpoint, options = {}) => {
     const headers = options.headers || {};
-
-    // Agregar el token si está disponible
-    //const token = localStorage.getItem("token");
-    /*if (token) {
-        headers.Authorization = `Bearer ${localStorage.getItem("tokenCRM")}`;
-    }*/
     
     try {
+        headers.Authorization = 'Bearer ' + localStorage.getItem('token');
         const response = await fetch(`${endpoint}`, {
             ...options,
             headers,
         });
 
-        // Si el token expiró (401), intentar renovarlo y reintentar la solicitud
+        // Para cuando no hay una respuesta de la api pero el proceso se ejecutó bien
+        if (response.status === 204){
+            return { success: true }; // 👈 respuesta manual
+        }
+
+        // Token expiró (401), intentar renovarlo y reintentar la solicitud
         if (response.status === 401) {
-            //console.warn('Token expirado. Intentando renovarlo...');
-
-            //const tokens = new Tokens();
-            //await tokens.tokenCRM();
-
             //Reintentar la solicitud original con el nuevo token
             headers.Authorization = 'Bearer ' + localStorage.getItem('token');
             const retryResponse = await fetch(`${endpoint}`, {
@@ -54,11 +50,13 @@ const request = async (endpoint, options = {}) => {
 
             return await retryResponse.json();
         }
-
+        
+        // Página no encontrada
         if (response.status === 404){
-            throw Error('No se encontraron datos al solicitarlos');
+            throw Error('No se encontró la página');
         }
 
+        // respuesta no fué exitosa
         if (!response.ok) {
             throw Error(`${response.status} ${response.statusText } ${response.url.substring(response.url.lastIndexOf("/"))}`);
         }

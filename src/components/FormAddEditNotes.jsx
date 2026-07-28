@@ -7,6 +7,14 @@ import SelectNoteType from "./SelectNoteType";
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+import Modal from 'react-bootstrap/Modal';
+
+
 const FormAddEditNotes = ({ id, viewNote, onClose, onSaved }) => {
 
     const [viewFormAddEditNotes, setViewFormAddEditNotes] = useState(false);
@@ -51,22 +59,41 @@ const FormAddEditNotes = ({ id, viewNote, onClose, onSaved }) => {
         
     return (
         <>
-            {error && <div style={{ color: 'red', backgroundColor: '#f3cec8', padding: '5px'}}>{error}</div>}
+            {error && <Alert variant="danger">{error}</Alert>}
 
             {viewNote && (
-                <div style={{ width: '100%', border: '1px solid black', marginBottom: '10px'}}>
+   
+                <Modal 
+                    show={viewNote} 
+                    onHide={onClose}
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header closeButton><h3>Guardar Registro</h3></Modal.Header>
+                    <Modal.Body>
 
-                    <div onClick={() => {onClose()}} style={{ float: 'right'}} >X</div>
+                        <Form onSubmit={saveEditRecord} onReset={clearAll}>
+                            <Row style={{ paddingBottom: '3px'}}>
+                                <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Fecha:</Form.Label></Col>
+                                <Col sm={7}><Form.Control name="fecha" defaultValue={formDate} type="Date"></Form.Control></Col>
+                            </Row> 
+                            <Row style={{ paddingBottom: '3px'}}>
+                                <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Descripción:</Form.Label></Col>
+                                <Col sm={7}><Form.Control as="textarea" rows={3} name="descripcion" defaultValue={formDescripcion} onChange={e => console.log(e.target.value)}></Form.Control></Col>
+                            </Row>
+                            <Row style={{ paddingBottom: '3px'}}>
+                                <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Tipo Nota:</Form.Label></Col>
+                                <Col sm={7}><SelectNoteType status={formNoteType} onChange={handleStatusChange}></SelectNoteType></Col>
+                            </Row>
+                            <Row style={{ paddingBottom: '3px'}}>
+                                <Col style={{ textAlign: 'center'}}><Button type="submit">Guardar</Button> <Button variant="secondary" type="reset">Limpiar formulario</Button></Col>
+                            </Row>
+                        </Form>
 
-                    <form onSubmit={saveEditRecord} onReset={clearAll} style={{ border: '0px solid black', padding: '10px', marginBottom: '20px'}}>
-                        <Input name="fecha" defaultValue={formDate} label="Fecha:" type="Date"></Input>
-                        <TextArea name="descripcion" defaultValue={formDescripcion} label="Descripción:" ></TextArea>
-                        <SelectNoteType status={formNoteType} onChange={handleStatusChange}></SelectNoteType>
-                        <p><button className="counter" type="submit">Guardar</button> <button className="counter" type="reset">Limpiar Formulario</button></p>
-                    </form>
+                        </Modal.Body>
+                </Modal>
+            )}
 
-                </div>
-            )}        
         </>
     )
 }

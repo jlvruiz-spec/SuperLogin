@@ -4,6 +4,11 @@ import { useState, useEffect } from "react";
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
 
+import Row from 'react-bootstrap/Row';
+import Alert from 'react-bootstrap/Alert';
+import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
+
 const JobAppStatus = ({ status, onChange }) => {
  
     const [data, setData] = useState([]);
@@ -38,8 +43,13 @@ const JobAppStatus = ({ status, onChange }) => {
     
     return (
         <>
-        {loading && <div style={{ color: 'orange', backgroundColor: '#eee2d1', padding: '5px'}}>Cargando estados, espere</div> }
-        <select name="jobApplicationStatusId" onChange={handleChange}>
+        {loading && (             
+            <Spinner animation="border" role="status">
+            <span className="visually-hidden">Cargando Estados...</span>
+            </Spinner>            
+        )}
+        
+        <Form.Select name="jobApplicationStatusId" onChange={handleChange}>
             
             { 
                 data.map((item) => {
@@ -53,7 +63,7 @@ const JobAppStatus = ({ status, onChange }) => {
                   )
                 })
             }
-        </select>
+        </Form.Select>
         </>
     )
 }

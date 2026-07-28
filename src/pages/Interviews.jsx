@@ -9,6 +9,10 @@ import { crudService2 } from "../services/crudService2";
 
 import Dates from "../utils/dates";
 
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+
 const Interviews = () => {
 
     const { id } = useParams();
@@ -56,43 +60,53 @@ const Interviews = () => {
 
         <h1>Entrevistas</h1>
 
-        <p><Link to="/jobapplication" style={{ float: 'left'}}>&#60;&#60;Volver atrás |</Link> 
-        <Link to={`/notes/${id}`} style={{ float: 'left'}}>&nbsp; Ver notas&#62;&#62;</Link></p>
+        <p><Link to="/jobapplication" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&#60;&#60;Volver atrás |</Link> 
+        <Link to={`/notes/${id}`} class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&nbsp; Ver notas&#62;&#62;</Link></p>
 
-        <center><button className="counter" onClick={() => {setViewInterview(true)}}>Agregar nueva entrevista</button></center>
+        <center><Button onClick={() => {setViewInterview(true)}}>Agregar nueva entrevista</Button></center>
 
+        <p>&nbsp;</p>
         <FormAddEditInterview id={id} viewInterview={viewInterview} onClose={InterviewsClose} onSaved={() => {getRecordById(id), InterviewsClose()} }></FormAddEditInterview>
         
-        {loading && <div style={{ color: 'orange', backgroundColor: '#eee2d1', padding: '5px'}}>Cargando entrevistas, espere</div> }
+        {loading && 
+            <Alert variant="warning">Cargando entrevistas, espere</Alert> 
+        }
 
-        <table style={{ border: '1px solid black', borderCollapse: 'collapse', fontSize: '14px'}}>
-            <thead>
-                <tr className='tabla'>
-                    <th>Fecha</th>
-                    <th>Descripción</th>
-                    {/* <th></th> */}
-                    {/* <th></th> */}
-                </tr>
-            </thead>
-            <tbody>
+        { data.length === 0 &&  (
+            <Alert variant="info">No hay registros</Alert>
+        )}      
 
-                { data.length > 0 &&
-                    data.map((item) => {
-                        return (
-                            <tr key={item.jobApplicationInterviewId}>
-                                <td className='tds' style={{ textAlign: 'left'}}>{Dates(item.interviewDate)}</td>
-                                <td className='tds' style={{ textAlign: 'left'}}>{item.interviewDescription}</td>
-                                {/* <td className='tds'><button onClick={() => {}} type="button" className="counter">Notas</button></td> */}
-                                {/* <td className='tds'><button onClick={() => getNoteTypeById(item.jobApplicationInterviewId)} type="button" className="counter">Editar</button></td> */}
-                            </tr>
-                        )
-                    })
-                }
-                { data.length === 0 && <div>No hay registros</div>}
+        { data.length > 0 &&  (
+            <Table striped bordered hover size="sm">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Descripción</th>
+                        {/* <th></th> */}
+                        {/* <th></th> */}
+                    </tr>
+                </thead>
+                <tbody>
 
-            </tbody>
-        </table>
+                    { data.length > 0 &&
+                        data.map((item) => {
+                            return (
+                                <tr key={item.jobApplicationInterviewId}>
+                                    <td style={{ textAlign: 'left'}}>{Dates(item.interviewDate)}</td>
+                                    <td style={{ textAlign: 'left'}}>{item.interviewDescription}</td>
+                                    {/* <td className='tds'><button onClick={() => {}} type="button" className="counter">Notas</button></td> */}
+                                    {/* <td className='tds'><button onClick={() => getNoteTypeById(item.jobApplicationInterviewId)} type="button" className="counter">Editar</button></td> */}
+                                </tr>
+                            )
+                        })
+                    }
+                    { data.length === 0 && 
+                        <Alert variant="info">No hay registros</Alert>
+                    }
 
+                </tbody>
+            </Table>
+        )}
         </>
     )
 }

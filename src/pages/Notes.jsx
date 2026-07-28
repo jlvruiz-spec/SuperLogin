@@ -9,6 +9,10 @@ import { crudService2 } from "../services/crudService2";
 
 import Dates from "../utils/dates";
 
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+
 const Notes = () => {
 
     const { id } = useParams();
@@ -55,39 +59,47 @@ const Notes = () => {
         <>
         <h1>Notas</h1>
 
-        <p><Link to="/jobapplication" style={{ float: 'left'}}>&#60;&#60;Volver atrás |</Link> <Link to={`/interviews/${id}`} style={{ float: 'left'}}>&nbsp;Ver entrevistas&#62;&#62;</Link></p>
+        <p><Link to="/jobapplication" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&#60;&#60;Volver atrás | </Link> 
+        <Link to={`/interviews/${id}`} class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&nbsp;Ver entrevistas&#62;&#62;</Link></p>
 
-        <center><button className="counter" onClick={() => {setViewNote(true)}}>Agregar nueva nota</button></center>
+        <center><Button onClick={() => {setViewNote(true)}}>Agregar nueva nota</Button></center>
 
+        <p>&nbsp;</p>
         <FormAddEditNotes id={id} viewNote={viewNote} onClose={NotesClose} onSaved={() => {getRecordById(id), NotesClose()}}></FormAddEditNotes>
 
-        {loading && <div style={{ color: 'orange', backgroundColor: '#eee2d1', padding: '5px'}}>Cargando notas, espere</div> }
+        {loading && (
+            <Alert variant="warning">Cargando notas, espere</Alert> 
+        )}
 
-        <table style={{ border: '1px solid black', borderCollapse: 'collapse', fontSize: '14px'}}>
-            <thead>
-                <tr className='tabla'>
-                    <th>Fecha</th>
-                    <th>Descripción</th>
-                    {/* <th></th> */}
-                </tr>
-            </thead>
-            <tbody>
+        { data.length === 0 && (
+            <Alert variant="info">No hay registros</Alert>
+        )}
 
-                { data.map((item) => {
-                        return (
-                            <tr key={item.noteId}>
-                                <td className='tds' style={{ textAlign: 'left'}}>{Dates(item.noteDate)}</td>
-                                <td className='tds' style={{ textAlign: 'left'}}>{item.noteDescription}</td>
-                                {/* <td className='tds'><button onClick={() => getNoteTypeById(item.jobApplicationId)} type="button" className="counter">Editar</button></td> */}
-                            </tr>
-                        )
-                    })
-                }
-                { data.length === 0 && <div>No hay registros</div>}
+        { data.length > 0 && (
+        
+            <Table striped bordered hover size="sm">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Descripción</th>
+                        {/* <th></th> */}
+                    </tr>
+                </thead>
+                <tbody>
 
-
-            </tbody>
-        </table>        
+                    { data.map((item) => {
+                            return (
+                                <tr key={item.noteId}>
+                                    <td style={{ textAlign: 'left'}}>{Dates(item.noteDate)}</td>
+                                    <td style={{ textAlign: 'left'}}>{item.noteDescription}</td>
+                                    {/* <td className='tds'><button onClick={() => getNoteTypeById(item.jobApplicationId)} type="button" className="counter">Editar</button></td> */}
+                                </tr>
+                            )
+                        })
+                    }
+                </tbody>
+            </Table>
+        )}
         </>
     )
 }

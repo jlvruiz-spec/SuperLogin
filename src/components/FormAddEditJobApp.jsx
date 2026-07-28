@@ -7,6 +7,20 @@ import TextArea from "./TextArea";
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
 
+import Modal from 'react-bootstrap/Modal';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+
+/**
+ * Edición y alta de nuevos registros de seguimiento de empleos
+ * @param id id del seguimiento de empleo
+ * @param viewEditAdd variable false/true que permite visualizar o no el formulario (viene desde el padre)
+ * @param onClose función que viene desde el padre para cerrar el formulario
+ * @param onSaved función que viene desde el padre para evaluar y actualizar en el padre 
+ */
 const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
 
     const [formNombre, setFormNombre] = useState("");
@@ -68,7 +82,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
         if (parseInt(formData.get("Id")) != 0){
             await EditJobApp({
                 company: formData.get("empresa"),
-                jobApplicationCreationDate: new Date(formData.get("fecha")).toISOString(),
+                jobApplicationCreationDate: new Date(formData.get("fecha")),
                 jobApplicationId: parseInt(formData.get("Id")),
                 jobApplicationStatusId: parseInt(formData.get("jobApplicationStatusId")),
                 jobDescription: formData.get("descripcion"),
@@ -76,7 +90,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
                 recruiterName: formData.get("reclutador"),
                 source: formData.get("fuente"),
                 vacancyName: formData.get("nombre"),
-                vacancyURL: formData.get("url")
+                vacancyURL: formData.get("url"),
             });
         } else {   
             let result = await AddJobApp({
@@ -108,7 +122,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
         setFormStatus(0);  
         setFormStatusDescripcion("");  
         setFormSource("");
-        setFormFecha("");
+        setFormDate("");
         setFormUserId(0);
     }
 
@@ -124,26 +138,64 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
             
             {error && <div style={{ color: 'red', backgroundColor: '#f3cec8', padding: '5px'}}>{error}</div>}
 
-
             {viewAddEdit && (
-                <div style={{ border: '1px solid black', padding: '10px', marginBottom: '20px'}}>
-                    <div onClick={() => {onClose(), clearAll()}} style={{ float: 'right'}} >X</div>
-                    <h3>{id !== 0 ? `Editar Registro` : 'Nuevo Registro'}</h3>
-                    <form onSubmit={saveEditJobApp} onReset={clearAll} style={{ border: '0px solid black', padding: '10px', marginBottom: '20px'}}>
-                        <input name="Id" value={id} type="hidden" />
+
+
+                <Modal 
+                    show={viewAddEdit} 
+                    onHide={onClose}
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header closeButton><h3>{id !== 0 ? `Editar Registro` : 'Nuevo Registro'}</h3></Modal.Header>
+                    <Modal.Body>
+
+                    <Form onSubmit={saveEditJobApp} onReset={clearAll} style={{ border: '0px solid black', padding: '10px', marginBottom: '20px'}}>
+                        <input name="Id" value={id} type="hidden" />                        
                         <input name="userId" defaultValue={formUserId} type="hidden" />
-                        <Input name="nombre" defaultValue={formNombre} label="Nombre:" />
-                        <Input name="url" defaultValue={formUrl} label="URL:" />
-                        <Input name="empresa" defaultValue={formEmpresa} label="Empresa:" />
-                        <Input name="reclutador" defaultValue={formReclutador} label="Reclutador:" />
-                        <Input name="locacion" defaultValue={formLocacion} label="Locación:" />
-                        <TextArea name="descripcion" defaultValue={formDescripcion} label="Descripción:"></TextArea>
-                        <Input name="fuente" defaultValue={formSource} label="Fuente:" />
-                        <Input name="fecha" defaultValue={formDate} label="Fecha:" type="Date"></Input>
-                        Estado:<JobAppStatus status={formStatus} onChange={handleStatusChange}></JobAppStatus>
-                        <p><button className="counter" type="submit">Guardar</button> <button className="counter" type="reset">Descartar</button></p>
-                    </form>
-                </div>
+                        <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Nombre:</Form.Label></Col>
+                            <Col sm={7}><Form.Control name="nombre" defaultValue={formNombre} type="text"></Form.Control></Col>
+                        </Row>
+                        <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>URL:</Form.Label></Col>
+                            <Col sm={7}><Form.Control name="url" defaultValue={formUrl} type="text"></Form.Control></Col>
+                        </Row>
+                        <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Empresa:</Form.Label></Col>
+                            <Col sm={7}><Form.Control name="empresa" defaultValue={formEmpresa} type="text"></Form.Control></Col>
+                        </Row>
+                        <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Reclutador:</Form.Label></Col>
+                            <Col sm={7}><Form.Control name="reclutador" defaultValue={formReclutador} type="text"></Form.Control></Col>
+                        </Row>
+                        <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Locación:</Form.Label></Col>
+                            <Col sm={7}><Form.Control name="locacion" defaultValue={formLocacion} type="text"></Form.Control></Col>
+                        </Row>
+                        <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Descripción:</Form.Label></Col>
+                            <Col sm={7}><Form.Control as="textarea" rows={3} name="descripcion" defaultValue={formDescripcion}></Form.Control></Col>
+                        </Row>
+                         <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Fuente:</Form.Label></Col>
+                            <Col sm={7}><Form.Control name="fuente" defaultValue={formSource} type="text"></Form.Control></Col>
+                        </Row>
+                        <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Fecha:</Form.Label></Col>
+                            <Col sm={7}><Form.Control name="fecha" defaultValue={formDate} type="datetime-local"></Form.Control></Col>
+                        </Row>
+                        <Row style={{ paddingBottom: '3px'}}>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Estado:</Form.Label></Col>
+                            <Col sm={7}><JobAppStatus status={formStatus} onChange={handleStatusChange}></JobAppStatus></Col>
+                        </Row>
+                        <Row><Col><Button variant="success" type="submit">Guardar</Button> <Button variant="secondary" type="reset">Limpiar formulario</Button></Col></Row>
+                    </Form>
+
+                    </Modal.Body>
+                </Modal> 
+
+   
             )}
 
         </>
