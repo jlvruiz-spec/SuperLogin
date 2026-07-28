@@ -75,7 +75,7 @@ const FormAddEditNotes = ({ id, viewNote, onClose, onSaved }) => {
                         <Form onSubmit={saveEditRecord} onReset={clearAll}>
                             <Row style={{ paddingBottom: '3px'}}>
                                 <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Fecha:</Form.Label></Col>
-                                <Col sm={7}><Form.Control name="fecha" defaultValue={formDate} type="Date"></Form.Control></Col>
+                                <Col sm={7}><Form.Control name="fecha" defaultValue={formDate} type="datetime-local"></Form.Control></Col>
                             </Row> 
                             <Row style={{ paddingBottom: '3px'}}>
                                 <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Descripción:</Form.Label></Col>

@@ -108,7 +108,7 @@ const JobApplication = () => {
                     <td style={{ textAlign: 'left'}}>{item.jobApplicationStatusDescription}</td>
                     <td style={{ textAlign: 'center'}}><Link to={`/interviews/${item.jobApplicationId}`}>Entrevistas</Link></td>
                     <td style={{ textAlign: 'center'}}><Link to={`/notes/${item.jobApplicationId}`}>Notas</Link></td>
-                    <td style={{ textAlign: 'center'}}><Button variant="link" onClick={() => getJobApplicationById(item.jobApplicationId)}>Editar{item.jobApplicationI}</Button></td>
+                    <td style={{ textAlign: 'center'}}><Button variant="link" onClick={() => getJobApplicationById(item.jobApplicationId)}>Editar</Button></td>
                   </tr>
                 )
               })

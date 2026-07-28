@@ -82,7 +82,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
         if (parseInt(formData.get("Id")) != 0){
             await EditJobApp({
                 company: formData.get("empresa"),
-                jobApplicationCreationDate: new Date(formData.get("fecha")),
+                jobApplicationCreationDate: new Date(formData.get("fecha")).toISOString(),
                 jobApplicationId: parseInt(formData.get("Id")),
                 jobApplicationStatusId: parseInt(formData.get("jobApplicationStatusId")),
                 jobDescription: formData.get("descripcion"),
@@ -140,7 +140,6 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
 
             {viewAddEdit && (
 
-
                 <Modal 
                     show={viewAddEdit} 
                     onHide={onClose}
@@ -189,7 +188,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
                             <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Estado:</Form.Label></Col>
                             <Col sm={7}><JobAppStatus status={formStatus} onChange={handleStatusChange}></JobAppStatus></Col>
                         </Row>
-                        <Row><Col><Button variant="success" type="submit">Guardar</Button> <Button variant="secondary" type="reset">Limpiar formulario</Button></Col></Row>
+                        <Row><Col style={{ textAlign: 'center'}}><Button variant="success" type="submit">Guardar</Button> <Button variant="secondary" type="reset">Limpiar formulario</Button></Col></Row>
                     </Form>
 
                     </Modal.Body>

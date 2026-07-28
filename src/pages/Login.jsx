@@ -79,7 +79,7 @@ const Login = () => {
                             </Row>
                             <Row style={{ paddingBottom: '3px'}}>
                                 <Col>
-                                    <Link to="/passforgot">Recuperar contraseña</Link> | <Link to="/passreset">Cambiar contraseña</Link>
+                                    {/* <Link to="/passforgot">Recuperar contraseña</Link> | <Link to="/passreset">Cambiar contraseña</Link> */}
                                 </Col>
                             </Row>
                         </Form>
