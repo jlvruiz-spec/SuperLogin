@@ -35,8 +35,8 @@ const Login = () => {
     
         let result = await usePost({"user": username, "password": password, "applicationId": 1}); // Llamar a la función usePost para realizar la solicitud de inicio de sesión
         localStorage.setItem('token', result.token);
-        //navigate("/home"); // Redirige a la página de inicio después de iniciar sesión
-        navigate("/jobapplication"); // Redirige a la página de inicio después de iniciar sesión
+        navigate("/home"); // Redirige a la página de inicio después de iniciar sesión
+        //navigate("/jobapplication"); // Redirige a la página de inicio después de iniciar sesión
     }
 
 

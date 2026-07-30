@@ -34,6 +34,7 @@ const JobApplication = () => {
 
     const getAllJobApplications = async () => {
         setData(await useGet());
+        //console.log(data);
     }
 
     const getJobApplicationById = async (id) => {
@@ -54,7 +55,10 @@ const JobApplication = () => {
 
     useEffect(() => {
         getAllJobApplications();
-    }, []);   
+    }, []);  
+    
+    const obtenido = data.filter((item) => item.jobApplicationCreationDate === "2026-07-25T00:00:00").length;
+    console.log(obtenido)
 
   return (
     <>
@@ -78,7 +82,7 @@ const JobApplication = () => {
         
         {loading && 
           <Alert variant="warning">Cargando registros, espere</Alert> 
-        }        
+        } 
 
         <Table striped bordered hover size="sm" >
           <thead>

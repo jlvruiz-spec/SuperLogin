@@ -12,7 +12,7 @@ const Layout = () => {
 
     return (
         <Container fluid="sm">
-            <Row style={{ borderBottom: '1px solid black'}}><Col><MenuUsuario /></Col></Row>
+            <Row style={{ borderBottom: '0px solid black', marginTop: '10px'}}><Col ><MenuUsuario /></Col></Row>
             <Row style={{ minHeight: '660px'}}><Col><Outlet /></Col></Row>
             <Row><Col style={{ textAlign: 'center', borderTop: '1px solid black'}}>©2026</Col></Row>
         </Container>
