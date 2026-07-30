@@ -103,7 +103,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
                 jobDescription: formData.get("descripcion"),
                 location: formData.get("locacion"),
                 source: formData.get("fuente"),
-                recruiterName: formData.get("reclutador"),
+                recruiterName: "N/D", //formData.get("reclutador"),
                 userId: 1,
                 vacancyName: formData.get("nombre"),
                 vacancyURL: formData.get("url")}
@@ -153,7 +153,7 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
                         <input name="Id" value={id} type="hidden" />                        
                         <input name="userId" defaultValue={formUserId} type="hidden" />
                         <Row style={{ paddingBottom: '3px'}}>
-                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Nombre:</Form.Label></Col>
+                            <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Posición:</Form.Label></Col>
                             <Col sm={7}><Form.Control name="nombre" defaultValue={formNombre} type="text"></Form.Control></Col>
                         </Row>
                         <Row style={{ paddingBottom: '3px'}}>
@@ -164,10 +164,10 @@ const FormAddEditJobApp = ({ id, viewAddEdit, onClose, onSaved }) => {
                             <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Empresa:</Form.Label></Col>
                             <Col sm={7}><Form.Control name="empresa" defaultValue={formEmpresa} type="text"></Form.Control></Col>
                         </Row>
-                        <Row style={{ paddingBottom: '3px'}}>
+                        {/* <Row style={{ paddingBottom: '3px'}}>
                             <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Reclutador:</Form.Label></Col>
                             <Col sm={7}><Form.Control name="reclutador" defaultValue={formReclutador} type="text"></Form.Control></Col>
-                        </Row>
+                        </Row> */}
                         <Row style={{ paddingBottom: '3px'}}>
                             <Col sm={3}><Form.Label column={1} style={{ textAlign: 'right'}}>Locación:</Form.Label></Col>
                             <Col sm={7}><Form.Control name="locacion" defaultValue={formLocacion} type="text"></Form.Control></Col>

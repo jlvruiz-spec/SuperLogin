@@ -57,8 +57,8 @@ const JobApplication = () => {
         getAllJobApplications();
     }, []);  
     
-    const obtenido = data.filter((item) => item.jobApplicationCreationDate === "2026-07-25T00:00:00").length;
-    console.log(obtenido)
+    // const obtenido = data.filter((item) => item.jobApplicationCreationDate === "2026-07-25T00:00:00").length;
+    // console.log(obtenido)
 
   return (
     <>
@@ -67,9 +67,9 @@ const JobApplication = () => {
         {error && (
             <Alert variant="danger">{error}</Alert>
         )}
-
-        <center><Button onClick={() => newJobApplication(0)}>Agregar nuevo seguimiento a empleo</Button></center>
+        {/* <center><Button onClick={() => newJobApplication(0)}>Agregar nuevo seguimiento a empleo</Button></center> */}
         <p>&nbsp;</p>
+
         
         {viewAddEdit && idJobApplication >= 0 && (
            <FormAddEditJobApp 
@@ -84,6 +84,8 @@ const JobApplication = () => {
           <Alert variant="warning">Cargando registros, espere</Alert> 
         } 
 
+<p>Filtrar por fecha</p>
+<p>Del Al</p>
         <Table striped bordered hover size="sm" >
           <thead>
             <tr>
@@ -91,7 +93,7 @@ const JobApplication = () => {
                 <th>Id</th>
               )}
               <th>Fecha Creación</th>
-              <th>Nombre</th>
+              <th>Posición</th>
               <th>Estado</th>
               <th></th>
               <th></th>
