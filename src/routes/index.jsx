@@ -11,7 +11,7 @@ import NoteTypes from "../pages/NoteTypes";
 import JobAppStatus from "../pages/JobAppStatus";
 import Interviews from "../pages/Interviews";
 import Notes from "../pages/Notes";
-import Calendar from "../pages/Calendar";  
+import Calendary from "../pages/Calendar";  
 import Admin from "../pages/Admin";
 
 const router = createBrowserRouter([ 
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
           { path: "/jobappstatus", element: <JobAppStatus /> },
           { path: "/interviews/:id", element: <Interviews /> },
           { path: "/notes/:id", element: <Notes /> },
-          { path: "/calendar", element: <Calendar /> },
+          { path: "/calendar", element: <Calendary /> },
           { path: "/admin", element: <Admin /> },
         ]
       }

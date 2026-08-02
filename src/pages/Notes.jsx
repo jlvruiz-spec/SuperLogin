@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"; 
 import { Link } from "react-router-dom";
 import { useParams  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import FormAddEditNotes from "../components/FormAddEditNotes";
+import CompanyName from "../components/CompanyName";
 
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
@@ -12,6 +14,8 @@ import Dates from "../utils/dates";
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const Notes = () => {
 
@@ -23,6 +27,8 @@ const Notes = () => {
     const [formDescripcion, setFormDescripcion] = useState("");
     const [formUserId, setFormUserId] = useState(0);
     const [viewNote, setViewNote] = useState(false);
+
+    const navigate = useNavigate();
 
     const service = crudService2("api/v1/Note/GetByApplicationId/");
     const {
@@ -51,29 +57,31 @@ const Notes = () => {
 
     },[data]);
 
-    const NotesClose = () => {
-      setViewNote(false);
-    }     
+    const NotesClose = () => setViewNote(false);
 
     return (
         <>
-        <h1>Notas</h1>
+        <h1>Notas <CompanyName id={id} /></h1>
 
-        <p><Link to="/jobapplication" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&#60;&#60;Volver atrás | </Link> 
-        <Link to={`/interviews/${id}`} class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&nbsp;Ver entrevistas&#62;&#62;</Link></p>
+        {/* <p>
+            <Link to="/jobs" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&#60;&#60;Volver atrás | </Link> 
+            <Link to={`/interviews/${id}`} class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&nbsp;Ver entrevistas&#62;&#62;</Link>
+        </p> */}
 
-        <center><Button onClick={() => {setViewNote(true)}}>Agregar nueva nota</Button></center>
+        <Row sm="auto">
+            <Col><Button variant="info" onClick={() => navigate(`/interviews/${id}`)}>Ver Entrevistas</Button></Col>
+            <Col><Button variant="success" onClick={() => {setViewNote(true)}}>Agregar Nueva Nota</Button></Col>
+        </Row>        
 
         <p>&nbsp;</p>
+
         <FormAddEditNotes id={id} viewNote={viewNote} onClose={NotesClose} onSaved={() => {getRecordById(id), NotesClose()}}></FormAddEditNotes>
 
-        {loading && (
+        {loading ? (
             <Alert variant="warning">Cargando notas, espere</Alert> 
-        )}
-
-        { data.length === 0 && (
+        ) : ( data.length === 0 ? (
             <Alert variant="info">No hay registros</Alert>
-        )}
+        ) : null) }
 
         { data.length > 0 && (
         

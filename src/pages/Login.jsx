@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -14,6 +15,9 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 
 const Login = () => {
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -32,12 +36,25 @@ const Login = () => {
         const formData = new FormData(e.target);
         const username = formData.get("username");
         const password = formData.get("password");
+
+        if (username == "" || password == ""){
+            setAlertMessage("Debe ingresar usuario y contraseña");
+            setShowAlert(true);
+            e.target.elements.username.focus();
+            return;
+        }
+
     
         let result = await usePost({"user": username, "password": password, "applicationId": 1}); // Llamar a la función usePost para realizar la solicitud de inicio de sesión
         localStorage.setItem('token', result.token);
         navigate("/home"); // Redirige a la página de inicio después de iniciar sesión
-        //navigate("/jobapplication"); // Redirige a la página de inicio después de iniciar sesión
+        //navigate("/jobs"); // Redirige a la página de inicio después de iniciar sesión
     }
+
+    // en el form -> onKeyDown={(e) => checkKeyDown(e)}
+    const checkKeyDown = (e) => {
+        if (e.key === 'Enter') e.preventDefault();
+    };    
 
 
     return (
@@ -55,7 +72,7 @@ const Login = () => {
                 <h1>Login</h1>
                 <Row style={{ border: '1px solid black'}}>
                     <Col sm={5}>
-                        <Form onSubmit={onSubmit}>
+                        <Form onSubmit={onSubmit} >
                             <Row style={{ paddingBottom: '3px'}}>
                                 <Col sm={2}>
                                     <Form.Label column={1} style={{ textAlign: 'right'}}>Clave:</Form.Label>
@@ -85,6 +102,12 @@ const Login = () => {
                         </Form>
                     </Col>
                 </Row>  
+
+                {showAlert && (
+                    <Alert variant="danger" className="mt-3" onClose={() => setShowAlert(false)} dismissible>
+                        {alertMessage}
+                    </Alert>
+                )}
 
             </Container>
             

@@ -10,9 +10,12 @@ import { crudService2 } from "../services/crudService2";
 import Dates from "../utils/dates";
 
 import Table from 'react-bootstrap/Table';
+import Pagination from "react-bootstrap/Pagination";
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const JobApplication = () => {
 
@@ -22,9 +25,15 @@ const JobApplication = () => {
     const [viewAddEdit, setViewAddEdit] = useState(false);
     const [show, setShow] = useState(false);
 
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(10); 
+    const [totalPages, setTotalPages] = useState(0);
+
     const navigate = useNavigate();
 
-    const service = crudService2("api/v1/JobApplication/GetJobApplicationByUserId");
+    //const service = crudService2("api/v1/JobApplication/GetJobApplicationByUserId"); // Todos sin paginación
+    const service = crudService2("api/v1/JobApplication/JobApplications?"); // con paginación
+    
     const {
         loading,
         error,
@@ -33,8 +42,9 @@ const JobApplication = () => {
     } = useConnections(service);        
 
     const getAllJobApplications = async () => {
-        setData(await useGet());
-        //console.log(data);
+        const result = await useGet(`pageNumber=${pageNumber}&pageSize=${pageSize}`);
+        setData(result.items);
+        setTotalPages(result.totalPages);
     }
 
     const getJobApplicationById = async (id) => {
@@ -47,15 +57,13 @@ const JobApplication = () => {
         setViewAddEdit(true);
     }
 
-    const FormAddEditJobAppClose = () => {
-      setViewAddEdit(false);
-    }
+    const FormAddEditJobAppClose = () => setViewAddEdit(false);
 
     const handleClose = () => setViewAddEdit(false);
 
     useEffect(() => {
         getAllJobApplications();
-    }, []);  
+    }, [pageNumber, pageSize]);  
     
     // const obtenido = data.filter((item) => item.jobApplicationCreationDate === "2026-07-25T00:00:00").length;
     // console.log(obtenido)
@@ -66,11 +74,14 @@ const JobApplication = () => {
 
         {error && (
             <Alert variant="danger">{error}</Alert>
-        )}
-        {/* <center><Button onClick={() => newJobApplication(0)}>Agregar nuevo seguimiento a empleo</Button></center> */}
+        )}        
+        
+        <Row sm="auto">
+            <Col><Button variant="success" onClick={() => newJobApplication(0)}>Agregar Nuevo Seguimiento de Empleo</Button></Col>
+        </Row>
+
         <p>&nbsp;</p>
 
-        
         {viewAddEdit && idJobApplication >= 0 && (
            <FormAddEditJobApp 
              id={idJobApplication} 
@@ -80,19 +91,25 @@ const JobApplication = () => {
            ></FormAddEditJobApp>
         )}
         
-        {loading && 
-          <Alert variant="warning">Cargando registros, espere</Alert> 
-        } 
-
-<p>Filtrar por fecha</p>
-<p>Del Al</p>
+        {/* <p>Filtrar por fecha</p>
+        <p>Del Al</p> */}
+        <Row style={{ paddingBottom: '15px'}}>
+          <Col sm={3} style={{textAlign: 'right'}}>Mostrar registros por página:</Col>
+          <Col sm={2}>
+            <Form.Select name="recsByPage" value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+              <option value={20}>20</option>
+            </Form.Select>
+          </Col>
+        </Row>
+        
         <Table striped bordered hover size="sm" >
           <thead>
             <tr>
-              {showIdInTable && (
-                <th>Id</th>
-              )}
               <th>Fecha Creación</th>
+              <th>Empresa</th>
               <th>Posición</th>
               <th>Estado</th>
               <th></th>
@@ -106,10 +123,8 @@ const JobApplication = () => {
               data.map((item) => {
                 return (
                   <tr key={item.jobApplicationId}>
-                    {showIdInTable && (
-                      <td>{item.jobApplicationId}</td>
-                    )}
                     <td>{Dates(item.jobApplicationCreationDate)}</td>
+                    <td style={{ textAlign: 'left'}}>{item.company}</td>
                     <td style={{ textAlign: 'left'}}>{item.vacancyName}</td>
                     <td style={{ textAlign: 'left'}}>{item.jobApplicationStatusDescription}</td>
                     <td style={{ textAlign: 'center'}}><Link to={`/interviews/${item.jobApplicationId}`}>Entrevistas</Link></td>
@@ -121,8 +136,42 @@ const JobApplication = () => {
             }
 
           </tbody>
-        </Table>    
-        
+          <tfoot>
+            <tr>
+              <td colSpan={7} style={{ textAlign: 'center'}}>
+                
+                  <Pagination>
+                    Registros por página: {pageSize} | Página {pageNumber} de {totalPages} &nbsp;
+                    <Pagination.Prev
+                      disabled={pageNumber === 1}
+                      onClick={() => setPageNumber(pageNumber - 1)}
+                    />
+                    {[...Array(totalPages)].map((_, i) => (
+                      <Pagination.Item
+                        key={i + 1}
+                        active={i + 1 === pageNumber}
+                        onClick={() => setPageNumber(i + 1)}
+                      >
+                        {i + 1}
+                      </Pagination.Item>
+                    ))}
+                    <Pagination.Next
+                      disabled={pageNumber === totalPages}
+                      onClick={() => setPageNumber(pageNumber + 1)}
+                    />
+                  </Pagination>
+
+              </td>
+            </tr>
+          </tfoot>
+        </Table>  
+
+        { loading ? ( 
+            <Alert variant="warning">Cargando registros, espere</Alert> 
+        ) : ( data.length === 0 ?  (
+            <Alert variant="info">No hay registros</Alert>
+        ) : null) }   
+      
     </>
   );
 }

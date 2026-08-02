@@ -86,7 +86,11 @@ const FormAddEditNotes = ({ id, viewNote, onClose, onSaved }) => {
                                 <Col sm={7}><SelectNoteType status={formNoteType} onChange={handleStatusChange}></SelectNoteType></Col>
                             </Row>
                             <Row style={{ paddingBottom: '3px'}}>
-                                <Col style={{ textAlign: 'center'}}><Button type="submit">Guardar</Button> <Button variant="secondary" type="reset">Limpiar formulario</Button></Col>
+                                <Col style={{ textAlign: 'center'}}>
+                                    <Button type="submit">Guardar</Button>&nbsp; 
+                                    <Button variant="secondary" type="reset">Limpiar formulario</Button>&nbsp;
+                                    <Button variant="warning" onClick={onClose}>Cerrar Modal</Button>
+                                </Col>
                             </Row>
                         </Form>
 

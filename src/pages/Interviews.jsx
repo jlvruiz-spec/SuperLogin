@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react"; 
+import { useEffect, useState, Suspense, lazy } from "react"; 
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useParams  } from "react-router-dom";
 
 import FormAddEditInterview from "../components/FormAddEditInterview";
+import CompanyName from "../components/CompanyName";
+const FormAddEditJobApp  = lazy(() => import("../components/FormAddEditJobApp"));
 
 import { useConnections } from "../hooks/useConnections";
 import { crudService2 } from "../services/crudService2";
@@ -12,6 +15,8 @@ import Dates from "../utils/dates";
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const Interviews = () => {
 
@@ -23,6 +28,9 @@ const Interviews = () => {
     const [formDescripcion, setFormDescripcion] = useState("");
     const [formUserId, setFormUserId] = useState(0);
     const [viewInterview, setViewInterview] = useState(false);
+    const [viewAddEdit, setViewAddEdit] = useState(false);
+
+    const navigate = useNavigate();
 
     const service = crudService2("api/v1/JobApplicationInterview/GetByApplicationId/");
     const {
@@ -51,30 +59,44 @@ const Interviews = () => {
 
     },[data]);
 
-    const InterviewsClose = () => {
-      setViewInterview(false);
-    } 
+    const InterviewsClose = () => setViewInterview(false);
+
+    const FormAddEditJobAppClose = () => setViewAddEdit(false);
 
     return (
         <>
 
-        <h1>Entrevistas</h1>
+        <h1>Entrevistas <CompanyName id={id} /></h1>
 
-        <p><Link to="/jobapplication" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&#60;&#60;Volver atrás |</Link> 
-        <Link to={`/notes/${id}`} class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&nbsp; Ver notas&#62;&#62;</Link></p>
+        {/* <p>
+            <Link type="button" to={`/notes/${id}`} class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>Ver Notas</Link>
+            <Link to="/jobs" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style={{ float: 'left'}}>&#60;&#60;Volver atrás |</Link>&nbsp;
+        </p>*/}
 
-        <center><Button onClick={() => {setViewInterview(true)}}>Agregar nueva entrevista</Button></center>
+        <Row sm="auto">
+            <Col><Button variant="info" onClick={() => navigate(`/notes/${id}`)}>Ver Notas</Button></Col>
+            <Col><Button variant="success" onClick={() => {setViewInterview(true)}}>Agregar nueva entrevista</Button></Col>
+            <Col><Button variant="warning" onClick={() => setViewAddEdit(true)}>Editar Registro</Button></Col>
+            
+        </Row>
+        
+        {viewAddEdit && (
+           <FormAddEditJobApp 
+             id={id} 
+             viewAddEdit={viewAddEdit} 
+             onClose={FormAddEditJobAppClose} 
+             onSaved={()=> {setViewAddEdit(false);}}
+           ></FormAddEditJobApp>
+        )}
 
         <p>&nbsp;</p>
         <FormAddEditInterview id={id} viewInterview={viewInterview} onClose={InterviewsClose} onSaved={() => {getRecordById(id), InterviewsClose()} }></FormAddEditInterview>
         
-        {loading && 
+        { loading ? ( 
             <Alert variant="warning">Cargando entrevistas, espere</Alert> 
-        }
-
-        { data.length === 0 &&  (
+        ) : ( data.length === 0 ?  (
             <Alert variant="info">No hay registros</Alert>
-        )}      
+        ) : null) }      
 
         { data.length > 0 &&  (
             <Table striped bordered hover size="sm">
@@ -99,9 +121,6 @@ const Interviews = () => {
                                 </tr>
                             )
                         })
-                    }
-                    { data.length === 0 && 
-                        <Alert variant="info">No hay registros</Alert>
                     }
 
                 </tbody>
